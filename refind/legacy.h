@@ -1,8 +1,8 @@
 /*
- * refind/scan.h
- * Headers related to scanning for boot loaders
+ * refind/legacy.h
+ * Functions related to BIOS/CSM/legacy booting
  *
- * Copyright (c) 2006-2010 Christoph Pfisterer
+ * Copyright (c) 2006 Christoph Pfisterer
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,37 +34,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /*
- * Modifications copyright (c) 2012-2020 Roderick W. Smith
+ * Modifications copyright (c) 2012-2015 Roderick W. Smith
  *
  * Modifications distributed under the terms of the GNU General Public
- * License (GPL) version 3 (GPLv3), or (at your option) any later version.
+ * License (GPL) version 3 (GPLv3), a copy of which must be distributed
+ * with this source code or binaries made from it.
  *
  */
-/*
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 
-#ifndef __SCAN_H_
-#define __SCAN_H_
+#include "global.h"
 
-LOADER_ENTRY *InitializeLoaderEntry(IN LOADER_ENTRY *Entry);
-REFIT_MENU_SCREEN *InitializeSubScreen(IN LOADER_ENTRY *Entry);
-VOID GenerateSubScreen(LOADER_ENTRY *Entry, IN REFIT_VOLUME *Volume, IN BOOLEAN GenerateReturn);
-VOID SetLoaderDefaults(LOADER_ENTRY *Entry, CHAR16 *LoaderPath, IN REFIT_VOLUME *Volume);
-VOID ScanForBootloaders(BOOLEAN ShowMessage);
-VOID ScanForTools(VOID);
-
-#endif
-
-/* EOF */
+VOID ScanShell(VOID);
+VOID StartLegacy(IN LEGACY_ENTRY *Entry, IN CHAR16 *SelectionName);
+VOID StartLegacyUEFI(LEGACY_ENTRY *Entry, CHAR16 *SelectionName);
+VOID ScanLegacyDisc(VOID);
+VOID ScanLegacyInternal(VOID);
+VOID ScanLegacyExternal(VOID);
+VOID FindLegacyBootType(VOID);
+VOID WarnIfLegacyProblems(VOID);

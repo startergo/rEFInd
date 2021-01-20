@@ -60,7 +60,7 @@ endif
 #
 
 # ...for both GNU-EFI and TianoCore....
-OPTIMFLAGS      = -Os -fno-strict-aliasing -fno-tree-loop-distribute-patterns
+OPTIMFLAGS      = -Os -fno-strict-aliasing
 CFLAGS          = $(OPTIMFLAGS) -fno-stack-protector -fshort-wchar -Wall
 
 # ...for GNU-EFI....

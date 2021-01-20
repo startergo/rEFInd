@@ -1,5 +1,5 @@
 /*
- * refind/launch_legacy.c
+ * refind/legacy.c
  * Functions related to BIOS/CSM/legacy booting
  *
  * Copyright (c) 2006 Christoph Pfisterer
@@ -57,7 +57,7 @@
 
 #include "global.h"
 #include "icns.h"
-#include "launch_legacy.h"
+#include "legacy.h"
 #include "lib.h"
 #include "menu.h"
 #include "../include/refit_call_wrapper.h"

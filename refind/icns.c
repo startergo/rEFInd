@@ -59,8 +59,6 @@ BUILTIN_ICON BuiltinIconTable[BUILTIN_ICON_COUNT] = {
    { NULL, L"func_firmware", ICON_SIZE_SMALL },
    { NULL, L"func_csr_rotate", ICON_SIZE_SMALL },
    { NULL, L"func_hidden", ICON_SIZE_SMALL },
-   { NULL, L"func_install", ICON_SIZE_SMALL },
-   { NULL, L"func_bootorder", ICON_SIZE_SMALL },
    { NULL, L"tool_shell", ICON_SIZE_SMALL },
    { NULL, L"tool_part", ICON_SIZE_SMALL },
    { NULL, L"tool_rescue", ICON_SIZE_SMALL },
@@ -112,7 +110,6 @@ EG_IMAGE * LoadOSIcon(IN CHAR16 *OSIconName OPTIONAL, IN CHAR16 *FallbackIconNam
     while (((CutoutName = FindCommaDelimited(OSIconName, Index++)) != NULL) && (Image == NULL)) {
        SPrint(BaseName, 255, L"%s_%s", BootLogo ? L"boot" : L"os", CutoutName);
        Image = egFindIcon(BaseName, GlobalConfig.IconSizes[ICON_SIZE_BIG]);
-       MyFreePool(CutoutName);
     }
 
     // If that fails, try again using the FallbackIconName....

@@ -35,7 +35,7 @@
  */
 
 /*
- * Modifications copyright (c) 2012-2020 Roderick W. Smith
+ * Modifications copyright (c) 2012-2015 Roderick W. Smith
  * 
  * Modifications distributed under the terms of the GNU General Public
  * License (GPL) version 3 (GPLv3) or (at your option) any later version.
@@ -64,7 +64,6 @@
 #include "screen.h"
 #include "apple.h"
 #include "mystrings.h"
-#include "scan.h"
 #include "../include/refit_call_wrapper.h"
 #include "../mok/mok.h"
 
@@ -80,7 +79,7 @@
 #define GetTime ST->RuntimeServices->GetTime
 #define LAST_MINUTE 1439 /* Last minute of a day */
 
-// extern REFIT_MENU_ENTRY MenuEntryReturn;
+extern REFIT_MENU_ENTRY MenuEntryReturn;
 //static REFIT_MENU_ENTRY MenuEntryReturn   = { L"Return to Main Menu", TAG_RETURN, 0, 0, 0, NULL, NULL, NULL };
 
 //
@@ -481,12 +480,6 @@ static VOID SetDefaultByTime(IN CHAR16 **TokenList, OUT CHAR16 **Default) {
    } // if ((StartTime <= LAST_MINUTE) && (EndTime <= LAST_MINUTE))
 } // VOID SetDefaultByTime()
 
-static LOADER_ENTRY * AddPreparedLoaderEntry(LOADER_ENTRY *Entry) {
-    AddMenuEntry(&MainMenu, (REFIT_MENU_ENTRY *)Entry);
-
-    return(Entry);
-} // LOADER_ENTRY * AddPreparedLoaderEntry()
-
 // read config file
 VOID ReadConfig(CHAR16 *FileName)
 {
@@ -502,8 +495,13 @@ VOID ReadConfig(CHAR16 *FileName)
        MyFreePool(GlobalConfig.AlsoScan);
        GlobalConfig.AlsoScan = StrDuplicate(ALSO_SCAN_DIRS);
        MyFreePool(GlobalConfig.DontScanDirs);
-       if (SelfVolume)
-          TempStr = GuidAsString(&(SelfVolume->PartGuid));
+       if (SelfVolume) {
+          if (SelfVolume->VolName) {
+             TempStr = SelfVolume->VolName ? StrDuplicate(SelfVolume->VolName) : NULL;
+          } else {
+             TempStr = GuidAsString(&(SelfVolume->PartGuid));
+          } // if/else
+       }
        MergeStrings(&TempStr, SelfDirPath, L':');
        MergeStrings(&TempStr, MEMTEST_LOCATIONS, L',');
        GlobalConfig.DontScanDirs = TempStr;
@@ -638,10 +636,6 @@ VOID ReadConfig(CHAR16 *FileName)
                    GlobalConfig.ShowTools[i - 1] = TAG_REBOOT;
                 } else if (MyStriCmp(FlagName, L"shutdown")) {
                    GlobalConfig.ShowTools[i - 1] = TAG_SHUTDOWN;
-                } else if (MyStriCmp(FlagName, L"install")) {
-                   GlobalConfig.ShowTools[i - 1] = TAG_INSTALL;
-                } else if (MyStriCmp(FlagName, L"bootorder")) {
-                   GlobalConfig.ShowTools[i - 1] = TAG_BOOTORDER;
                 } else if (MyStriCmp(FlagName, L"apple_recovery")) {
                    GlobalConfig.ShowTools[i - 1] = TAG_APPLE_RECOVERY;
                 } else if (MyStriCmp(FlagName, L"windows_recovery")) {
@@ -981,6 +975,7 @@ VOID ScanUserConfigured(CHAR16 *FileName)
    REFIT_FILE        File;
    REFIT_VOLUME      *Volume;
    CHAR16            **TokenList;
+   CHAR16            *Title = NULL;
    UINTN             TokenCount, size;
    LOADER_ENTRY      *Entry;
 
@@ -993,6 +988,7 @@ VOID ScanUserConfigured(CHAR16 *FileName)
 
       while ((TokenCount = ReadTokenLine(&File, &TokenList)) > 0) {
          if (MyStriCmp(TokenList[0], L"menuentry") && (TokenCount > 1)) {
+            Title = StrDuplicate(TokenList[1]);
             Entry = AddStanzaEntries(&File, Volume, TokenList[1]);
             if (Entry->Enabled) {
                if (Entry->me.SubScreen == NULL)
@@ -1001,6 +997,7 @@ VOID ScanUserConfigured(CHAR16 *FileName)
             } else {
                MyFreePool(Entry);
             } // if/else
+            MyFreePool(Title);
 
          } else if (MyStriCmp(TokenList[0], L"include") && (TokenCount == 2) &&
                     MyStriCmp(FileName, GlobalConfig.ConfigFilename)) {
@@ -1054,7 +1051,6 @@ static REFIT_FILE * GenerateOptionsFromEtcFstab(REFIT_VOLUME *Volume) {
                   MyFreePool(Line);
                   Line = PoolPrint(L"\"Boot into single-user mode\"  \"ro root=%s single\"\n", Root);
                   MergeStrings((CHAR16**) &(Options->Buffer), Line, 0);
-                  MyFreePool(Line);
                   Options->BufferSize = StrLen((CHAR16*) Options->Buffer) * sizeof(CHAR16);
                } // if
             } // if

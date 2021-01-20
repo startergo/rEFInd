@@ -1,13 +1,13 @@
 Summary: EFI boot manager software
 Name: refind
-Version: 0.12.0
+Version: 0.11.4
 Release: 1%{?dist}
 Summary: EFI boot manager software
 License: GPLv3
 URL: http://www.rodsbooks.com/refind/
 Group: System Environment/Base
 Source: refind-src-%version.tar.gz
-Requires: efibootmgr gdisk
+Requires: efibootmgr
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 
 %define efiarch unknown
@@ -176,10 +176,6 @@ fi
 # thus wiping out the just-updated files.
 
 %changelog
-* Fri Mar 13 2020 R Smith <rodsmith@rodsbooks.com> - 0.12.0
-- Updated spec file for 0.12.0
-* Wed Feb 12 2020 R Smith <rodsmith@rodsbooks.com> - 0.11.5
-- Updated spec file for 0.11.5
 * Mon Nov 12 2018 R Smith <rodsmith@rodsbooks.com> - 0.11.4
 - Updated spec file for 0.11.4
 * Sun Jul 22 2018 R Smith <rodsmith@rodsbooks.com> - 0.11.3

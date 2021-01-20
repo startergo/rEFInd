@@ -3,7 +3,7 @@
 # refind.inf file to build rEFInd using the EDK2/UDK201# development
 # kit.
 #
-# Copyright (c) 2012-2020 by Roderick W. Smith
+# Copyright (c) 2012-2017 by Roderick W. Smith
 # Released under the terms of the GPLv3 (or, at your discretion, any later
 # version), a copy of which should come with this file.
 #
@@ -38,23 +38,19 @@
   mok/security_policy.c
   mok/simple_file.c
   refind/apple.c
+  refind/main.c
   refind/config.c
-  refind/crc32.c
-  refind/driver_support.c
-  refind/gpt.c
   refind/icns.c
-  refind/install.c
-  refind/launch_efi.c
-  refind/launch_legacy.c
+  refind/legacy.c
   refind/lib.c
   refind/line_edit.c
-  refind/linux.c
-  refind/main.c
   refind/menu.c
   refind/mystrings.c
-  refind/pointer.c
-  refind/scan.c
   refind/screen.c
+  refind/pointer.c
+  refind/driver_support.c
+  refind/gpt.c
+  refind/crc32.c
   libeg/image.c
   libeg/load_bmp.c
   libeg/load_icns.c

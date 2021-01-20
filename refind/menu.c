@@ -34,7 +34,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /*
- * Modifications copyright (c) 2012-2020 Roderick W. Smith
+ * Modifications copyright (c) 2012-2017 Roderick W. Smith
  *
  * Modifications distributed under the terms of the GNU General Public
  * License (GPL) version 3 (GPLv3), or (at your option) any later version.
@@ -65,7 +65,6 @@
 #include "line_edit.h"
 #include "mystrings.h"
 #include "icns.h"
-#include "scan.h"
 #include "../include/refit_call_wrapper.h"
 
 #include "../include/egemb_back_selected_small.h"
@@ -82,7 +81,7 @@
 #define MENU_FUNCTION_PAINT_TIMEOUT   (4)
 #define MENU_FUNCTION_PAINT_HINTS     (5)
 
-// typedef VOID (*MENU_STYLE_FUNC)(IN REFIT_MENU_SCREEN *Screen, IN SCROLL_STATE *State, IN UINTN Function, IN CHAR16 *ParamText);
+typedef VOID (*MENU_STYLE_FUNC)(IN REFIT_MENU_SCREEN *Screen, IN SCROLL_STATE *State, IN UINTN Function, IN CHAR16 *ParamText);
 
 static CHAR16 ArrowUp[2] = { ARROW_UP, 0 };
 static CHAR16 ArrowDown[2] = { ARROW_DOWN, 0 };
@@ -383,10 +382,9 @@ static VOID SaveScreen(VOID) {
 //
 // generic menu function
 //
-UINTN RunGenericMenu(IN REFIT_MENU_SCREEN *Screen,
-                     IN MENU_STYLE_FUNC StyleFunc,
-                     IN OUT INTN *DefaultEntryIndex,
-                     OUT REFIT_MENU_ENTRY **ChosenEntry) {
+static UINTN RunGenericMenu(IN REFIT_MENU_SCREEN *Screen, IN MENU_STYLE_FUNC StyleFunc, IN OUT INTN *DefaultEntryIndex,
+                            OUT REFIT_MENU_ENTRY **ChosenEntry)
+{
     SCROLL_STATE State;
     EFI_STATUS Status;
     EFI_INPUT_KEY key;
@@ -679,10 +677,7 @@ static VOID ShowTextInfoLines(IN REFIT_MENU_SCREEN *Screen) {
 } // VOID ShowTextInfoLines()
 
 // Do most of the work for text-based menus....
-VOID TextMenuStyle(IN REFIT_MENU_SCREEN *Screen,
-                   IN SCROLL_STATE *State,
-                   IN UINTN Function,
-                   IN CHAR16 *ParamText)
+static VOID TextMenuStyle(IN REFIT_MENU_SCREEN *Screen, IN SCROLL_STATE *State, IN UINTN Function, IN CHAR16 *ParamText)
 {
     INTN i;
     UINTN MenuWidth, ItemWidth, MenuHeight;
@@ -828,24 +823,24 @@ inline static UINTN TextLineHeight(VOID) {
 // specified XPos and YPos locations.
 static VOID DrawText(IN CHAR16 *Text, IN BOOLEAN Selected, IN UINTN FieldWidth, IN UINTN XPos, IN UINTN YPos)
 {
-    EG_IMAGE *TextBuffer;
-    EG_PIXEL Bg;
+   EG_IMAGE *TextBuffer;
+   EG_PIXEL Bg;
 
-    TextBuffer = egCreateFilledImage(FieldWidth, TextLineHeight(), FALSE, &MenuBackgroundPixel);
-    if (TextBuffer) {
-        Bg = MenuBackgroundPixel;
-        if (Selected) {
-            // draw selection bar background
-            egFillImageArea(TextBuffer, 0, 0, FieldWidth, TextBuffer->Height, &SelectionBackgroundPixel);
-            Bg = SelectionBackgroundPixel;
-        }
+   TextBuffer = egCreateImage(FieldWidth, TextLineHeight(), FALSE);
 
-        // render the text
-        egRenderText(Text, TextBuffer, egGetFontCellWidth(), TEXT_YMARGIN, (Bg.r + Bg.g + Bg.b) / 3);
-        egDrawImageWithTransparency(TextBuffer, NULL, XPos, YPos, TextBuffer->Width, TextBuffer->Height);
-        egFreeImage(TextBuffer);
-    }
-} /* VOID DrawText() */
+   egFillImage(TextBuffer, &MenuBackgroundPixel);
+   Bg = MenuBackgroundPixel;
+   if (Selected) {
+       // draw selection bar background
+       egFillImageArea(TextBuffer, 0, 0, FieldWidth, TextBuffer->Height, &SelectionBackgroundPixel);
+       Bg = SelectionBackgroundPixel;
+   }
+
+   // render the text
+   egRenderText(Text, TextBuffer, egGetFontCellWidth(), TEXT_YMARGIN, (Bg.r + Bg.g + Bg.b) / 3);
+   egDrawImageWithTransparency(TextBuffer, NULL, XPos, YPos, TextBuffer->Width, TextBuffer->Height);
+//    BltImage(TextBuffer, XPos, YPos);
+}
 
 // Finds the average brightness of the input Image.
 // NOTE: Passing an Image that covers the whole screen can strain the
@@ -960,10 +955,7 @@ static VOID ComputeSubScreenWindowSize(REFIT_MENU_SCREEN *Screen, IN SCROLL_STAT
 } // VOID ComputeSubScreenWindowSize()
 
 // Displays sub-menus
-VOID GraphicsMenuStyle(IN REFIT_MENU_SCREEN *Screen,
-                       IN SCROLL_STATE *State,
-                       IN UINTN Function,
-                       IN CHAR16 *ParamText)
+static VOID GraphicsMenuStyle(IN REFIT_MENU_SCREEN *Screen, IN SCROLL_STATE *State, IN UINTN Function, IN CHAR16 *ParamText)
 {
     INTN i;
     UINTN ItemWidth;
@@ -983,10 +975,7 @@ VOID GraphicsMenuStyle(IN REFIT_MENU_SCREEN *Screen,
             // initial painting
             SwitchToGraphicsAndClear();
             Window = egCreateFilledImage(MenuWidth, MenuHeight, FALSE, BackgroundPixel);
-            if (Window) {
-                egDrawImage(Window, EntriesPosX, EntriesPosY);
-                egFreeImage(Window);
-            }
+            egDrawImage(Window, EntriesPosX, EntriesPosY);
             ItemWidth = egComputeTextWidth(Screen->Title);
             if (MenuWidth > ItemWidth) {
                TitlePosX = EntriesPosX + (MenuWidth - ItemWidth) / 2 - CharWidth;
@@ -1062,11 +1051,8 @@ static VOID DrawMainMenuEntry(REFIT_MENU_ENTRY *Entry, BOOLEAN selected, UINTN X
    if (selected && DrawSelection) {
       Background = egCropImage(GlobalConfig.ScreenBackground, XPos, YPos,
                                SelectionImages[Entry->Row]->Width, SelectionImages[Entry->Row]->Height);
-      if (Background) {
-        egComposeImage(Background, SelectionImages[Entry->Row], 0, 0);
-        BltImageCompositeBadge(Background, Entry->Image, Entry->BadgeImage, XPos, YPos);
-        egFreeImage(Background);
-      } // if
+      egComposeImage(Background, SelectionImages[Entry->Row], 0, 0);
+      BltImageCompositeBadge(Background, Entry->Image, Entry->BadgeImage, XPos, YPos);
    } else { // Image not selected; copy background
       egDrawImageWithTransparency(Entry->Image, Entry->BadgeImage, XPos, YPos,
                                   SelectionImages[Entry->Row]->Width, SelectionImages[Entry->Row]->Height);
@@ -1158,7 +1144,6 @@ static VOID PaintIcon(IN EG_EMBEDDED_IMAGE *BuiltInIcon, IN CHAR16 *ExternalFile
       if (Alignment == ALIGN_RIGHT)
          PosX -= Icon->Width;
       egDrawImageWithTransparency(Icon, NULL, PosX, PosY - (Icon->Height / 2), Icon->Width, Icon->Height);
-      egFreeImage(Icon);
    }
 } // static VOID ()
 
@@ -1459,7 +1444,7 @@ VOID DisplaySimpleMessage(CHAR16* Title, CHAR16 *Message) {
 // Returns TRUE if any files were deleted, FALSE otherwise.
 static BOOLEAN RemoveInvalidFilenames(CHAR16 *FilenameList, CHAR16 *VarName) {
     UINTN i = 0;
-    CHAR16 *Filename, *OneElement, *VolName = NULL;
+    CHAR16 *Filename, *OneElement, *VolName = NULL /*, *NewList = NULL */;
     REFIT_VOLUME *Volume;
     EFI_FILE_HANDLE FileHandle;
     BOOLEAN DeleteIt = FALSE, DeletedSomething = FALSE;
@@ -1552,7 +1537,7 @@ VOID ManageHiddenTags(VOID) {
             CheckError(Status, L"in ManageHiddenTags()");
         }
         if (SaveTags || SaveTools || SaveLegacy)
-            RescanAll(FALSE, FALSE);
+            RescanAll(TRUE);
     } else {
         DisplaySimpleMessage(L"Information", L"No hidden tags found");
     }
@@ -1695,7 +1680,7 @@ static VOID HideTag(REFIT_MENU_ENTRY *ChosenEntry) {
             if (Loader->DiscoveryType == DISCOVERY_TYPE_AUTO) {
                 HideItemMenu.Title = L"Hide EFI OS Tag";
                 HideEfiTag(Loader, &HideItemMenu, L"HiddenTags");
-                RescanAll(FALSE, FALSE);
+                RescanAll(TRUE);
             } else {
                 DisplaySimpleMessage(L"Cannot Hide Entry for Manual Boot Stanza",
                                      L"You must edit refind.conf to remove this entry.");
@@ -1705,7 +1690,7 @@ static VOID HideTag(REFIT_MENU_ENTRY *ChosenEntry) {
         case TAG_LEGACY_UEFI:
             HideItemMenu.Title = L"Hide Legacy OS Tag";
             if (HideLegacyTag(LegacyLoader, &HideItemMenu))
-                RescanAll(FALSE, FALSE);
+                RescanAll(TRUE);
             break;
         case TAG_ABOUT:
         case TAG_REBOOT:
@@ -1713,7 +1698,6 @@ static VOID HideTag(REFIT_MENU_ENTRY *ChosenEntry) {
         case TAG_EXIT:
         case TAG_FIRMWARE:
         case TAG_CSR_ROTATE:
-        case TAG_INSTALL:
         case TAG_HIDDEN:
             DisplaySimpleMessage(L"Unable to Comply",
                                  L"To hide an internal tool, edit the 'showtools' line in refind.conf");
@@ -1721,7 +1705,7 @@ static VOID HideTag(REFIT_MENU_ENTRY *ChosenEntry) {
         case TAG_TOOL:
             HideItemMenu.Title = L"Hide Tool Tag";
             HideEfiTag(Loader, &HideItemMenu, L"HiddenTools");
-            RescanAll(FALSE, FALSE);
+            RescanAll(TRUE);
             break;
     } // switch()
 } // VOID HideTag()

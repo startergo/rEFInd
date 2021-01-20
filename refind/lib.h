@@ -34,7 +34,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /*
- * Modifications copyright (c) 2012-2020 Roderick W. Smith
+ * Modifications copyright (c) 2012-2015 Roderick W. Smith
  *
  * Modifications distributed under the terms of the GNU General Public
  * License (GPL) version 3 (GPLv3), a copy of which must be distributed
@@ -97,7 +97,6 @@ EFI_STATUS EfivarGetRaw(EFI_GUID *vendor, CHAR16 *name, CHAR8 **buffer, UINTN *s
 EFI_STATUS EfivarSetRaw(EFI_GUID *vendor, CHAR16 *name, CHAR8 *buf, UINTN size, BOOLEAN persistent);
 
 VOID CleanUpPathNameSlashes(IN OUT CHAR16 *PathName);
-CHAR16* SplitDeviceString(IN OUT CHAR16 *InString);
 VOID CreateList(OUT VOID ***ListPtr, OUT UINTN *ElementCount, IN UINTN InitialElementCount);
 VOID AddListElement(IN OUT VOID ***ListPtr, IN OUT UINTN *ElementCount, IN VOID *NewElement);
 VOID FreeList(IN OUT VOID ***ListPtr, IN OUT UINTN *ElementCount);
