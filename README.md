@@ -85,10 +85,10 @@ In Terminal, create a `rEFInd` folder under your `Documents` folder, `cd` to tha
 ```
 $ mkdir ~/Documents/rEFInd
 $ cd ~/Documents/rEFInd
-$ git clone https://github.com/YOUR_GITHUB_USERNAME/rEFInd-UDK.git edk2
+$ git clone https://github.com/YOUR_GITHUB_USERNAME/NextLoader-UDK.git edk2
 $ cd ~/Documents/rEFInd/edk2
 $ git checkout main
-$ git remote add upstream https://github.com/startergo/rEFInd-UDK.git
+$ git remote add upstream https://github.com/startergo/NextLoader-UDK.git
 ```
 
 **NB:** Replace `YOUR_GITHUB_USERNAME` above with your actual GitHub User Name.
@@ -136,7 +136,7 @@ Your local `rEFInd` repository will be under `Documents/rEFInd/Working`
 ## Syncing Your Repositories with Upstream Repositories
 ### Sync with the RepoUpdater Script (Recommended)
 - Navigate to your `/Documents/rEFInd/edk2/000-BuildScript` folder in Finder
-- Drag the `RepoUpdater.sh` file into Terminal
+- Drag the `RepoUpdater_rEFInd.sh` file into Terminal
 - Press `Enter`
 
 ### Sync Manually
