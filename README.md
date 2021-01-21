@@ -116,7 +116,7 @@ In Terminal, clone the forked `rEFInd` repository into a `Working` folder under 
 $ cd ~/Documents/rEFInd
 $ git clone https://github.com/YOUR_GITHUB_USERNAME/rEFInd.git Working
 $ cd ~/Documents/rEFInd/Working
-$ git checkout rEFInd
+$ git checkout main
 $ git remote add upstream https://github.com/startergo/rEFInd.git
 ```
 
@@ -156,7 +156,7 @@ In Terminal, run the following commands:
 
 ```
 $ cd ~/Documents/rEFInd/Working
-$ git checkout master
+$ git checkout main
 $ git pull origin master
 $ git push
 ```
