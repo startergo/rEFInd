@@ -1,4 +1,4 @@
-# rEFInd-UDK
+# rEFInd
 ## Overview
 UDK2018 Environment for Building the rEFInd Boot Manager.
 
