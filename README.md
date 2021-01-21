@@ -90,6 +90,13 @@ $ cd ~/Documents/rEFInd/edk2
 $ git checkout main
 $ git remote add upstream https://github.com/startergo/NextLoader-UDK.git
 ```
+Edit the file ~/Documents/edk2/Conf/target.txt and change the line:
+```
+ACTIVE_PLATFORM       = NextLoaderPkg/NextLoaderPkg.dsc
+```
+To:
+```
+ACTIVE_PLATFORM       = rEFIndPkg/rEFIndPkg.dsc
 
 **NB:** Replace `YOUR_GITHUB_USERNAME` above with your actual GitHub User Name.
 
