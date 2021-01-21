@@ -456,6 +456,9 @@ bailout_unload:
 
 bailout:
     MyFreePool(FullLoadOptions);
+    if (!IsDriver)
+        FinishExternalScreen();
+
     return ReturnStatus;
 } /* EFI_STATUS StartEFIImage() */
 
@@ -534,7 +537,6 @@ static VOID StartLoader(LOADER_ENTRY *Entry, CHAR16 *SelectionName)
     StoreLoaderName(SelectionName);
     StartEFIImage(Entry->Volume, Entry->LoaderPath, Entry->LoadOptions,
                   Basename(Entry->LoaderPath), Entry->OSType, !Entry->UseGraphicsMode, FALSE);
-    FinishExternalScreen();
 }
 
 // Locate an initrd or initramfs file that matches the kernel specified by LoaderPath.
@@ -1760,7 +1762,6 @@ static VOID StartTool(IN LOADER_ENTRY *Entry)
     StoreLoaderName(Entry->me.Title);
     StartEFIImage(Entry->Volume, Entry->LoaderPath, Entry->LoadOptions,
                   Basename(Entry->LoaderPath), Entry->OSType, TRUE, FALSE);
-    FinishExternalScreen();
 } /* static VOID StartTool() */
 
 static LOADER_ENTRY * AddToolEntry(REFIT_VOLUME *Volume,IN CHAR16 *LoaderPath, IN CHAR16 *LoaderTitle,
@@ -1988,7 +1989,7 @@ static VOID ScanForTools(VOID) {
                 j = 0;
                 while ((FileName = FindCommaDelimited(GPTSYNC_NAMES, j++)) != NULL) {
                     if (IsValidTool(SelfVolume, FileName)) {
-                        AddToolEntry(SelfLoadedImage->DeviceHandle, FileName, L"Hybrid MBR tool", BuiltinIcon(BUILTIN_ICON_TOOL_PART),
+                        AddToolEntry(SelfVolume, FileName, L"Hybrid MBR tool", BuiltinIcon(BUILTIN_ICON_TOOL_PART),
                                      'P', FALSE);
                     } // if
                     MyFreePool(FileName);
@@ -2080,12 +2081,16 @@ static VOID ScanForTools(VOID) {
 } // static VOID ScanForTools
 
 // Rescan for boot loaders
-VOID RescanAll(BOOLEAN DisplayMessage) {
+VOID RescanAll(BOOLEAN DisplayMessage, BOOLEAN Reconnect) {
     FreeList((VOID ***) &(MainMenu.Entries), &MainMenu.EntryCount);
     MainMenu.Entries = NULL;
     MainMenu.EntryCount = 0;
-    ConnectAllDriversToAllControllers();
-    ScanVolumes();
+    // ConnectAllDriversToAllControllers() can cause system hangs with some
+    // buggy filesystem drivers, so do it only if necessary....
+    if (Reconnect) {
+        ConnectAllDriversToAllControllers();
+        ScanVolumes();
+    }
     ReadConfig(GlobalConfig.ConfigFilename);
     SetVolumeIcons();
     ScanForBootloaders(DisplayMessage);
@@ -2264,7 +2269,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
           egDisplayMessage(L"Pausing before disk scan; please wait....", &BGColor, CENTER);
        for (i = 0; i < GlobalConfig.ScanDelay; i++)
           refit_call1_wrapper(BS->Stall, 1000000);
-       RescanAll(GlobalConfig.ScanDelay > 1);
+       RescanAll(GlobalConfig.ScanDelay > 1, TRUE);
        BltClearScreen(TRUE);
     } // if
 
@@ -2279,7 +2284,7 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
         // The Escape key triggers a re-scan operation....
         if (MenuExit == MENU_EXIT_ESCAPE) {
             MenuExit = 0;
-            RescanAll(TRUE);
+            RescanAll(TRUE, TRUE);
             continue;
         }
 

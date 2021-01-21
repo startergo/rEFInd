@@ -1,11 +1,55 @@
-0.11.5 (??/??/2020):
---------------------
+0.11.6 (?/??/2020):
+-------------------
+
+- The handling of screen resets on return from a program has been adjusted
+  to avoid problems with program error messages being erased by rEFInd's
+  screen clearing. If a program returns an error code, its output should
+  remain visible until the user presses a key in response to rEFInd's prompt
+  to do so.
+
+- Fixed bug that caused gptsync to sometimes hang on launch.
+
+- Improve identification of the ESP in the refind-install script in Linux.
+  Previously, NVMe devices and some corner cases were handled incorrectly.
+  This new code should fix these problems. This variant changes from a
+  dependency on parted to one on the gdisk package (the sgdisk program,
+  specifically).
+
+
+0.11.5 (2/12/2020):
+-------------------
 
 - Fixed bug that caused screen corruption when exiting the EFI shell
   (and perhaps other programs) on some systems.
 
-- Fixed bug that caused hidden tag management to not work reliably when
-  use_nvram was set to false.
+- Fixed bug that could cause rescan operations (including after hiding
+  or un-hiding loaders or when using a scan delay) to hang rEFInd. This
+  seemed to be a problem mostly with buggy filesystem drivers.
+
+- Cleaned up excessive slashes ("/") in refind-install script
+
+- Corrected incorrect display of "scanning for boot loaders" message
+  under some circumstances
+
+- Minor formatting changes to man pages
+
+- Renamed .der certificates to .cer, for better compatibility with
+  KeyTool.efi
+
+- If "%v" is in the kernel options in refind_linux.conf, do NOT
+  automatically include the auto-detected initrd file. This gives the user
+  greater control of initrd options when specifying them via in
+  refind_linux.conf via "%v", since an inappropriate auto-detected initrd
+  won't be included.
+
+- No longer build NTFS driver by default; it's just too buggy. The source
+  code is still available and can be built by typing "make ntfs" in the
+  filesystems subdirectory.
+
+- Documentation scrub: Updated to remove out-of-date references that
+  have accumulated over time.
+
+- Updated LodePNG to latest version (20200211).
 
 0.11.4 (11/12/2018):
 --------------------
