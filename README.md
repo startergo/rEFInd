@@ -1,10 +1,10 @@
-# NextLoader-UDK
+# rEFInd-UDK
 ## Overview
-UDK2018 Environment for Building the NextLoader Boot Manager.
+UDK2018 Environment for Building the rEFInd Boot Manager.
 
 Build instructions:
-# Building NextLoader on Mac OS
-These are step-by-step instructions for setting up a bespoke Tianocore EDK II build environment for buidling NextLoader on Mac OS.
+# Building rEFInd on Mac OS
+These are step-by-step instructions for setting up a bespoke Tianocore EDK II build environment for buidling rEFInd on Mac OS.
 
 These steps have been verified on Mac OS v10.12 (Sierra) and Mac OS v10.14 (Mojave) and should also work on Mac OS v10.13 (High Sierra) and Mac OS v10.15 (Catalina).
 
@@ -75,87 +75,87 @@ $ brew upgrade qemu
 ```
 
 ## Prepare the Bespoke TianoCore EDK II (UDK2018) Environment
-### Fork the NextLoader-UDK Repository
+### Fork the rEFInd-UDK Repository
 
 Navigate to `https://github.com/startergo/NextLoader-UDK` and fork the repository
 
-### Clone the Forked NextLoader-UDK Repository
-In Terminal, create a `NextLoader` folder under your `Documents` folder, `cd` to that directory and clone the "NextLoader Ready" TianoCore EDK II (UDK2018) repository into an `edk2` folder:
+### Clone the Forked rEFInd-UDK Repository
+In Terminal, create a `rEFInd` folder under your `Documents` folder, `cd` to that directory and clone the "rEFInd Ready" TianoCore EDK II (UDK2018) repository into an `edk2` folder:
 
 ```
-$ mkdir ~/Documents/NextLoader
-$ cd ~/Documents/NextLoader
-$ git clone https://github.com/YOUR_GITHUB_USERNAME/NextLoader-UDK.git edk2
-$ cd ~/Documents/NextLoader/edk2
+$ mkdir ~/Documents/rEFInd
+$ cd ~/Documents/rEFInd
+$ git clone https://github.com/YOUR_GITHUB_USERNAME/rEFInd-UDK.git edk2
+$ cd ~/Documents/rEFInd/edk2
 $ git checkout main
-$ git remote add upstream https://github.com/startergo/NextLoader-UDK.git
+$ git remote add upstream https://github.com/startergo/rEFInd-UDK.git
 ```
 
 **NB:** Replace `YOUR_GITHUB_USERNAME` above with your actual GitHub User Name.
 
-Your local `NextLoader-UDK` repository will be under `Documents/NextLoader/edk2`
+Your local `rEFInd-UDK` repository will be under `Documents/rEFInd/edk2`
 
 ### Build Required BaseTools C Tool Binaries
 
 ```
-$ cd ~/Documents/NextLoader/edk2
+$ cd ~/Documents/rEFInd/edk2
 $ make -C BaseTools/Source/C
 ```
 
 
-## Prepare the NextLoader Environment
-### Fork the NextLoader Repository
+## Prepare the rEFInd Environment
+### Fork the rEFInd Repository
 
-Navigate to `https://github.com/startergo/NextLoader` and fork the repository
+Navigate to `https://github.com/startergo/rEFInd` and fork the repository
 
-### Clone the Forked NextLoader Repository
+### Clone the Forked rEFInd Repository
 
-In Terminal, clone the forked `NextLoader` repository into a `Working` folder under your `NextLoader` folder:
+In Terminal, clone the forked `rEFInd` repository into a `Working` folder under your `rEFInd` folder:
 
 ```
-$ cd ~/Documents/NextLoader
-$ git clone https://github.com/YOUR_GITHUB_USERNAME/NextLoader.git Working
-$ cd ~/Documents/NextLoader/Working
-$ git checkout NextLoader
-$ git remote add upstream https://github.com/startergo/NextLoader.git
+$ cd ~/Documents/rEFInd
+$ git clone https://github.com/YOUR_GITHUB_USERNAME/rEFInd.git Working
+$ cd ~/Documents/rEFInd/Working
+$ git checkout rEFInd
+$ git remote add upstream https://github.com/startergo/rEFInd.git
 ```
 
 **NB:** Replace `YOUR_GITHUB_USERNAME` above with your actual GitHub User Name.
 
-Your local `NextLoader` repository will be under `Documents/NextLoader/Working`
+Your local `rEFInd` repository will be under `Documents/rEFInd/Working`
 
 
-## Build NextLoader
-- Navigate to your `/Documents/NextLoader/edk2/000-BuildScript` folder in Finder
-- Drag the `NextLoaderBuilder.sh` file into Terminal
+## Build rEFInd
+- Navigate to your `/Documents/rEFInd/edk2/000-BuildScript` folder in Finder
+- Drag the `rEFIndBuilder.sh` file into Terminal
   - Enter a space and `MyEdits`, or any other branch name, to the end of the line if you want to build on that branch
-  - If nothing is entered, the script will build on the default `NextLoader` branch
+  - If nothing is entered, the script will build on the default `rEFInd` branch
 - Press `Enter`
 
 
 ## Syncing Your Repositories with Upstream Repositories
 ### Sync with the RepoUpdater Script (Recommended)
-- Navigate to your `/Documents/NextLoader/edk2/000-BuildScript` folder in Finder
+- Navigate to your `/Documents/rEFInd/edk2/000-BuildScript` folder in Finder
 - Drag the `RepoUpdater.sh` file into Terminal
 - Press `Enter`
 
 ### Sync Manually
-#### NextLoader-UDK
+#### rEFInd-UDK
 In Terminal, run the following commands:
 
 ```
-$ cd ~/Documents/NextLoader/edk2
+$ cd ~/Documents/rEFInd/edk2
 $ git checkout main
 $ git pull upstream main
 $ git push
 ```
 
-#### NextLoader
+#### rEFInd
 
 In Terminal, run the following commands:
 
 ```
-$ cd ~/Documents/NextLoader/Working
+$ cd ~/Documents/rEFInd/Working
 $ git checkout master
 $ git pull origin master
 $ git push
