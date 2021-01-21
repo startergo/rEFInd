@@ -157,6 +157,6 @@ In Terminal, run the following commands:
 ```
 $ cd ~/Documents/rEFInd/Working
 $ git checkout main
-$ git pull origin master
+$ git pull origin main
 $ git push
 ```
