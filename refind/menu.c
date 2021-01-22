@@ -828,24 +828,24 @@ inline static UINTN TextLineHeight(VOID) {
 // specified XPos and YPos locations.
 static VOID DrawText(IN CHAR16 *Text, IN BOOLEAN Selected, IN UINTN FieldWidth, IN UINTN XPos, IN UINTN YPos)
 {
-    EG_IMAGE *TextBuffer;
-    EG_PIXEL Bg;
+   EG_IMAGE *TextBuffer;
+   EG_PIXEL Bg;
 
-    TextBuffer = egCreateFilledImage(FieldWidth, TextLineHeight(), FALSE, &MenuBackgroundPixel);
-    if (TextBuffer) {
-        Bg = MenuBackgroundPixel;
-        if (Selected) {
-            // draw selection bar background
-            egFillImageArea(TextBuffer, 0, 0, FieldWidth, TextBuffer->Height, &SelectionBackgroundPixel);
-            Bg = SelectionBackgroundPixel;
-        }
+   TextBuffer = egCreateImage(FieldWidth, TextLineHeight(), FALSE);
 
-        // render the text
-        egRenderText(Text, TextBuffer, egGetFontCellWidth(), TEXT_YMARGIN, (Bg.r + Bg.g + Bg.b) / 3);
-        egDrawImageWithTransparency(TextBuffer, NULL, XPos, YPos, TextBuffer->Width, TextBuffer->Height);
-        egFreeImage(TextBuffer);
-    }
-} /* VOID DrawText() */
+   egFillImage(TextBuffer, &MenuBackgroundPixel);
+   Bg = MenuBackgroundPixel;
+   if (Selected) {
+       // draw selection bar background
+       egFillImageArea(TextBuffer, 0, 0, FieldWidth, TextBuffer->Height, &SelectionBackgroundPixel);
+       Bg = SelectionBackgroundPixel;
+   }
+
+   // render the text
+   egRenderText(Text, TextBuffer, egGetFontCellWidth(), TEXT_YMARGIN, (Bg.r + Bg.g + Bg.b) / 3);
+   egDrawImageWithTransparency(TextBuffer, NULL, XPos, YPos, TextBuffer->Width, TextBuffer->Height);
+//    BltImage(TextBuffer, XPos, YPos);
+}
 
 // Finds the average brightness of the input Image.
 // NOTE: Passing an Image that covers the whole screen can strain the
@@ -983,10 +983,7 @@ VOID GraphicsMenuStyle(IN REFIT_MENU_SCREEN *Screen,
             // initial painting
             SwitchToGraphicsAndClear();
             Window = egCreateFilledImage(MenuWidth, MenuHeight, FALSE, BackgroundPixel);
-            if (Window) {
-                egDrawImage(Window, EntriesPosX, EntriesPosY);
-                egFreeImage(Window);
-            }
+            egDrawImage(Window, EntriesPosX, EntriesPosY);
             ItemWidth = egComputeTextWidth(Screen->Title);
             if (MenuWidth > ItemWidth) {
                TitlePosX = EntriesPosX + (MenuWidth - ItemWidth) / 2 - CharWidth;
@@ -1062,11 +1059,8 @@ static VOID DrawMainMenuEntry(REFIT_MENU_ENTRY *Entry, BOOLEAN selected, UINTN X
    if (selected && DrawSelection) {
       Background = egCropImage(GlobalConfig.ScreenBackground, XPos, YPos,
                                SelectionImages[Entry->Row]->Width, SelectionImages[Entry->Row]->Height);
-      if (Background) {
-        egComposeImage(Background, SelectionImages[Entry->Row], 0, 0);
-        BltImageCompositeBadge(Background, Entry->Image, Entry->BadgeImage, XPos, YPos);
-        egFreeImage(Background);
-      } // if
+      egComposeImage(Background, SelectionImages[Entry->Row], 0, 0);
+      BltImageCompositeBadge(Background, Entry->Image, Entry->BadgeImage, XPos, YPos);
    } else { // Image not selected; copy background
       egDrawImageWithTransparency(Entry->Image, Entry->BadgeImage, XPos, YPos,
                                   SelectionImages[Entry->Row]->Width, SelectionImages[Entry->Row]->Height);
@@ -1158,7 +1152,6 @@ static VOID PaintIcon(IN EG_EMBEDDED_IMAGE *BuiltInIcon, IN CHAR16 *ExternalFile
       if (Alignment == ALIGN_RIGHT)
          PosX -= Icon->Width;
       egDrawImageWithTransparency(Icon, NULL, PosX, PosY - (Icon->Height / 2), Icon->Width, Icon->Height);
-      egFreeImage(Icon);
    }
 } // static VOID ()
 
@@ -1459,7 +1452,7 @@ VOID DisplaySimpleMessage(CHAR16* Title, CHAR16 *Message) {
 // Returns TRUE if any files were deleted, FALSE otherwise.
 static BOOLEAN RemoveInvalidFilenames(CHAR16 *FilenameList, CHAR16 *VarName) {
     UINTN i = 0;
-    CHAR16 *Filename, *OneElement, *VolName = NULL;
+    CHAR16 *Filename, *OneElement, *VolName = NULL /*, *NewList = NULL */;
     REFIT_VOLUME *Volume;
     EFI_FILE_HANDLE FileHandle;
     BOOLEAN DeleteIt = FALSE, DeletedSomething = FALSE;
