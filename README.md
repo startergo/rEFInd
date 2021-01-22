@@ -144,11 +144,7 @@ Your local `rEFInd` repository will be under `Documents/rEFInd/Working`
 - Press `Enter`
 
 
-## Syncing Your Repositories with Upstream Repositories
-### Sync with the RepoUpdater Script (Recommended)
-- Navigate to your `/Documents/rEFInd/edk2/000-BuildScript` folder in Finder
-- Drag the `RepoUpdater_rEFInd.sh` file into Terminal
-- Press `Enter`
+
 
 ### Sync Manually
 #### rEFInd-UDK
@@ -170,4 +166,14 @@ $ cd ~/Documents/rEFInd/Working
 $ git checkout main
 $ git pull origin main
 $ git push
+```
+Edit the file ~/Documents/edk2/Conf/target.txt and change the line:
+
+```
+ACTIVE_PLATFORM       = NextLoaderPkg/NextLoaderPkg.dsc
+```
+to
+
+```
+ACTIVE_PLATFORM       = rEFIndPkg/rEFIndPkg.dsc
 ```
