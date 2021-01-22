@@ -156,17 +156,6 @@ $ git checkout main
 $ git pull upstream main
 $ git push
 ```
-
-#### rEFInd
-
-In Terminal, run the following commands:
-
-```
-$ cd ~/Documents/rEFInd/Working
-$ git checkout main
-$ git pull origin main
-$ git push
-```
 Edit the file ~/Documents/edk2/Conf/target.txt and change the line:
 
 ```
@@ -177,3 +166,14 @@ to
 ```
 ACTIVE_PLATFORM       = rEFIndPkg/rEFIndPkg.dsc
 ```
+#### rEFInd
+
+In Terminal, run the following commands:
+
+```
+$ cd ~/Documents/rEFInd/Working
+$ git checkout main
+$ git pull origin main
+$ git push
+```
+
