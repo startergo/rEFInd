@@ -270,6 +270,7 @@ VOID ReinitVolumes(VOID)
     EFI_STATUS              Status;
     REFIT_VOLUME            *Volume;
     UINTN                   VolumeIndex;
+    EFI_DEVICE_PATH         *RemainingDevicePath;
     EFI_HANDLE              DeviceHandle, WholeDiskHandle;
 
     for (VolumeIndex = 0; VolumeIndex < VolumesCount; VolumeIndex++) {
@@ -277,7 +278,8 @@ VOID ReinitVolumes(VOID)
 
         if (Volume->DevicePath != NULL) {
             // get the handle for that path
-            Status = refit_call3_wrapper(BS->LocateDevicePath, &BlockIoProtocol, &(Volume->DevicePath), &DeviceHandle);
+            RemainingDevicePath = Volume->DevicePath;
+            Status = refit_call3_wrapper(BS->LocateDevicePath, &BlockIoProtocol, &RemainingDevicePath, &DeviceHandle);
 
             if (!EFI_ERROR(Status)) {
                 Volume->DeviceHandle = DeviceHandle;
@@ -291,7 +293,8 @@ VOID ReinitVolumes(VOID)
 
         if (Volume->WholeDiskDevicePath != NULL) {
             // get the handle for that path
-            Status = refit_call3_wrapper(BS->LocateDevicePath, &BlockIoProtocol, &(WholeDiskDevicePath), &WholeDiskHandle);
+            RemainingDevicePath = Volume->WholeDiskDevicePath;
+            Status = refit_call3_wrapper(BS->LocateDevicePath, &BlockIoProtocol, &RemainingDevicePath, &WholeDiskHandle);
 
             if (!EFI_ERROR(Status)) {
                 // get the BlockIO protocol
@@ -822,9 +825,8 @@ static CHAR16 *SizeInIEEEUnits(UINT64 SizeInBytes) {
             Units[1] = Prefixes[Index];
         } // if/else
         SPrint(TheValue, 255, L"%ld%s", SizeInIeee, Units);
-        MyFreePool(Units);
     } // if
-
+    MyFreePool(Units);
     return TheValue;
 } // CHAR16 *SizeInIEEEUnits()
 
@@ -939,7 +941,7 @@ VOID ScanVolume(REFIT_VOLUME *Volume)
 {
     EFI_STATUS              Status;
     EFI_DEVICE_PATH         *DevicePath, *NextDevicePath;
-    EFI_DEVICE_PATH         *DiskDevicePath;
+    EFI_DEVICE_PATH         *DiskDevicePath, *RemainingDevicePath;
     EFI_HANDLE              WholeDiskHandle;
     UINTN                   PartialLength;
     BOOLEAN                 Bootable;
@@ -1005,7 +1007,9 @@ VOID ScanVolume(REFIT_VOLUME *Volume)
             CopyMem((UINT8 *)DiskDevicePath + PartialLength, EndDevicePath, sizeof(EFI_DEVICE_PATH));
 
             // get the handle for that path
-            Status = refit_call3_wrapper(BS->LocateDevicePath, &BlockIoProtocol, &DiskDevicePath, &WholeDiskHandle);
+            RemainingDevicePath = DiskDevicePath;
+            Status = refit_call3_wrapper(BS->LocateDevicePath, &BlockIoProtocol, &RemainingDevicePath, &WholeDiskHandle);
+            MyFreePool(DiskDevicePath);
 
             if (!EFI_ERROR(Status)) {
                 //Print(L"  - original handle: %08x - disk handle: %08x\n", (UINT32)DeviceHandle, (UINT32)WholeDiskHandle);
@@ -1029,8 +1033,8 @@ VOID ScanVolume(REFIT_VOLUME *Volume)
                     Volume->WholeDiskBlockIO = NULL;
                     //CheckError(Status, L"from HandleProtocol");
                 }
-            } // if
-            MyFreePool(DiskDevicePath);
+            } //else
+              //  CheckError(Status, L"from LocateDevicePath");
         }
 
         DevicePath = NextDevicePath;
