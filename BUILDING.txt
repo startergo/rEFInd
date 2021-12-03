@@ -419,8 +419,6 @@ docker run --rm \
     -v "$PWD/RefindPkg/:/home/edk2/edk2/RefindPkg/" \
     -v "/tmp/RefindPkg-build:/home/edk2/Build" \
     xaionaro2/edk2-builder:vUDK2018
-    
-The result will be in /tmp/RefindPkg-build
 
 A Note about NTFS
 =================
