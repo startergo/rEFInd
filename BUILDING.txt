@@ -26,6 +26,11 @@ To compile rEFInd, you'll need the following:
   using Clang 3.4 under Ubuntu, with partial success. The main rEFInd
   binary, gptsync, and some drivers compile successfully; but only gptsync
   runs normally. The drivers I've tried and the main rEFInd binary crash.)
+  Install required packages:
+  
+```  
+sudo apt-get install build-essential git uuid-dev iasl nasm
+```
 
 * One of the following:
 
