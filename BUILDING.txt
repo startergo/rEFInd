@@ -26,21 +26,6 @@ To compile rEFInd, you'll need the following:
   using Clang 3.4 under Ubuntu, with partial success. The main rEFInd
   binary, gptsync, and some drivers compile successfully; but only gptsync
   runs normally. The drivers I've tried and the main rEFInd binary crash.)
-  Install required packages. Example for Ubuntu:
-  
-sudo apt install build-essential git uuid-dev iasl nasm python2
-for building gdisk.efi you might need Ubuntu 14.4.6 LTS and additionaly:
-sudo apt install build-essential git uuid-dev iasl nasm python libpopt-dev libncursesw5-dev
-or if using Latest Ubuntu use gcc-4.8:
-sudo add-apt-repository "deb http://us.archive.ubuntu.com/ubuntu/ bionic main universe"
-sudo apt install gcc-4.8 g++-4.8
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50
-sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 50
-gcc --version
-gcc (Ubuntu 4.8.5-4ubuntu8) 4.8.5
-g++ --version
-g++ (Ubuntu 4.8.5-4ubuntu8) 4.8.5
-sudo apt install git uuid-dev iasl nasm python2 libpopt-dev libncursesw5-dev
 
 * One of the following:
 
