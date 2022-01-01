@@ -133,7 +133,9 @@ git -C edk2-vUDK2018 submodule update --init
 
    B. Unzip the downloaded file (edk2-vUDK2018.zip) in the current directory
       (/usr/local), or use git to pull down the latest source code. This
-      creates a subdirectory tree called edk2-vUDK2018.
+      creates a subdirectory tree called edk2-vUDK2018. If you already 
+      cloned UDK2018 branch and initialized it as outlined in step 1 of
+      "Preparing Your Development Kit" skip this step.
 
    C. Type "cd edk2-vUDK2018" to change into the extracted directory.
 
