@@ -28,7 +28,7 @@ To compile rEFInd, you'll need the following:
   runs normally. The drivers I've tried and the main rEFInd binary crash.)
   Install required packages. Example for Ubuntu:
   
-sudo apt-get install build-essential git uuid-dev iasl nasm python2
+sudo apt install build-essential git g++ uuid-dev iasl nasm python2
 
 * One of the following:
 
