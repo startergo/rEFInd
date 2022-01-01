@@ -46,7 +46,7 @@ sudo apt-get install build-essential git uuid-dev iasl nasm python2
     newer version in February of 2021 (edk2-edk2-stable202011), but it
     failed to compile because of the removal of in-tree libraries and other
     problems.
-
+    
   * The GNU-EFI package (http://sourceforge.net/projects/gnu-efi/). You can
     install this from a package called "gnu-efi"; however, rEFInd relies on
     features that were added sometime between version 3.0s and 3.0u, so I
@@ -107,7 +107,13 @@ is a bit unclear about others. Here's how to install the toolkit (note that
 you'll need to be root to do this in the specified location):
 
 1. Download UDK2018 from
-   https://github.com/tianocore/tianocore.github.io/wiki/UDK2018. (If you
+   https://github.com/tianocore/tianocore.github.io/wiki/UDK2018:
+   
+cd /usr/local   
+git clone -b UDK2018 "https://github.com/tianocore/edk2" edk2-vUDK2018
+git -C edk2-vUDK2018 submodule update --init
+
+   (If you
    must use it for some reason, you can download the older
    UDK2014.SR1.UP1.P1 from
    https://github.com/tianocore/tianocore.github.io/wiki/UDK2014-Releases
