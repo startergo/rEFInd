@@ -29,6 +29,8 @@ To compile rEFInd, you'll need the following:
   Install required packages. Example for Ubuntu:
   
 sudo apt install build-essential git uuid-dev iasl nasm python2
+for building gdisk.efi you might need Ubuntu 14.4.6 LTS and additionaly:
+sudo apt install build-essential git uuid-dev iasl nasm python libpopt-dev libncursesw5-dev
 
 * One of the following:
 
