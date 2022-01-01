@@ -232,6 +232,8 @@ git -C edk2-vUDK2018 submodule update --init
    Python 3 installed, you may need to adjust the default python for this
    build (for instance, by typing "eselect python set python2.7" in
    Gentoo).
+   
+10. Type "make edk2" for edk2 builds.
 
 If you installed in a location other than the one I've specified, you must
 edit the EDK2BASE (for "make edk2" builds) or TIANOBASE (for the deprecated
