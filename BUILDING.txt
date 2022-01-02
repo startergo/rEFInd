@@ -41,6 +41,7 @@ gcc (Ubuntu 4.8.5-4ubuntu8) 4.8.5
 g++ --version
 g++ (Ubuntu 4.8.5-4ubuntu8) 4.8.5
 sudo apt install git uuid-dev iasl nasm python2 libpopt-dev libncursesw5-dev
+
 * One of the following:
 
   * The TianoCore EDK2/UDK package (https://github.com/tianocore/edk2). This
