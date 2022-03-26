@@ -485,7 +485,31 @@ efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)
     if (GlobalConfig.SpoofOSXVersion && GlobalConfig.SpoofOSXVersion[0] != L'\0')
         SetAppleOSInfo();
 
-    InitScreen();
+    SetVolumeIcons();
+    ScanForBootloaders(FALSE);
+    ScanForTools();
+
+    if (GlobalConfig.Timeout == -1) {
+        Status = refit_call2_wrapper(ST->ConIn->ReadKeyStroke, ST->ConIn, &key);
+        //Silent = Status == EFI_NOT_READY;
+        if (Status == EFI_NOT_READY) {
+            Silent = TRUE;
+        } else {
+            KeyAsString[0] = key.UnicodeChar;
+            KeyAsString[1] = 0;
+            ShortcutEntry = FindMenuShortcutEntry(&MainMenu, KeyAsString);
+            if (ShortcutEntry >= 0) {
+                ChosenEntry = MainMenu.Entries[ShortcutEntry];
+                SelectionName = StrDuplicate(ChosenEntry->Title);
+                Silent = TRUE;
+            } else {
+                GlobalConfig.Timeout = 0;
+            }
+        }
+    }
+
+    if (!Silent)
+        InitScreen();
     WarnIfLegacyProblems();
     MainMenu.TimeoutSeconds = GlobalConfig.Timeout;
 
