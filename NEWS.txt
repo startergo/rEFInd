@@ -1,23 +1,8 @@
-0.13.4 (?/??/2023):
+0.13.4 (?/??/2022):
 -------------------
 
-- Fixed bug in mkcdimage that caused USB flash drive image to be
-  damaged.
-
-- Fixed bug that could cause rEFInd since 0.11.5 to freeze on some
-  computers.
-
-- Fixed bugs that could cause rEFInd to freeze when opening a new log file,
-  opening filesystems, or installing itself on some systems.
-
-0.13.3.1 (4/12/2022):
----------------------
-
 - Fixed bug that caused refind-install to not recognize already-mounted
-  ESP in Linux. This was causing installation failures on some systems.
-
-- Fixed bug in refind-install that caused duplicate EFI boot manager
-  entries when updating a rEFInd installation that used Shim.
+  ESP.
 
 0.13.3 (4/10/2022):
 -------------------
@@ -40,11 +25,6 @@
   unnecessarily often.
 
 - Made rEFInd silent when timeout is -1.
-
-- Fixed handling of timeout == -1 when no keyboard is attached.
-
-- Fixed display of arrow icons when those icons are larger than the stock
-  size because of manual specification of icon size in refind.conf.
 
 - Introduced log file rotation -- if refind.log-old exists and logging is
   enabled, that log file is deleted and the existing log file is renamed to
